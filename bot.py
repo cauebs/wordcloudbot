@@ -1,5 +1,5 @@
 import os, logging
-from telegram.ext import Updater, CommandHandler, MessageHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from wordcloud import WordCloud
 from PIL import Image
 
