@@ -18,14 +18,14 @@ def handle_message(bot, update):
 	cid = update.message.chat.id
 	txt = update.message.text
 	
-	if words[cid] is None:
-		words[cid] = ''
+	if words[str(cid)] is None:
+		words[str(cid)] = ''
 
-	words[cid] += txt + ' '
+	words[str(cid)] += txt + ' '
 
 def wordcloud(bot, update):
 	cid = update.message.chat.id
-	wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(words[cid])
+	wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(words[str(cid)])
 	image = wordcloud.to_image()
 	image.save("/tmp/"+str(cid)+".png", "PNG")
 	with open("/tmp/"+str(cid)+".png", 'rb') as photo:
