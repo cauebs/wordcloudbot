@@ -1,5 +1,5 @@
 import os, logging
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler
 from wordcloud import WordCloud
 from PIL import Image
 
@@ -25,7 +25,7 @@ def handle_message(bot, update):
 
 def wordcloud(bot, update):
 	cid = update.message.chat.id
-	wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(text)
+	wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(words[cid])
 	image = wordcloud.to_image()
 	image.save("/tmp/"+str(cid)+".png", "PNG")
 	with open("/tmp/"+str(cid)+".png", 'rb') as photo:
