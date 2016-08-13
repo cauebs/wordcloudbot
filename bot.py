@@ -18,7 +18,7 @@ def handle_message(bot, update):
 	cid = update.message.chat.id
 	txt = update.message.text
 	
-	if cid in words:
+	if cid not in words:
 		words[cid] = ''
 
 	words[cid] += txt + ' '
