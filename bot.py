@@ -1,5 +1,7 @@
 import os, logging
 from telegram.ext import Updater, CommandHandler
+from wordcloud import WordCloud
+from PIL import Image
 
 logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -10,15 +12,25 @@ updater = Updater(TOKEN)
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 updater.bot.setWebhook("https://"+APPNAME+".herokuapp.com/"+TOKEN)
 
+words = {}
 
-def start(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Hello World!')
+def handle_message(bot, update):
+	cid = update.message.chat.id
+	txt = update.message.text
+	
+	if words[cid] is None:
+		words[cid] = ''
 
-def hello(bot, update):
-    bot.sendMessage(update.message.chat_id,
-                    text='Hello '+update.message.from_user.first_name)
+	words[cid] += txt + ' '
 
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
+def wordcloud(bot, update):
+	cid = update.message.chat.id
+	wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(text)
+	image = wordcloud.to_image()
+	image.save("/tmp/"+str(cid)+".png", "PNG")
+	with open("/tmp/"+str(cid)+".png", 'rb') as photo:
+		bot.sendPhoto(chat_id=cid, photo=photo)
 
+updater.dispatcher.add_handler(CommandHandler('wordcloud', wordcloud))
+updater.dispatcher.add_handler(MessageHandler([Filters.text], handle_message))
 updater.idle()
